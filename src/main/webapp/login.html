@@ -8,16 +8,119 @@
     <title>黑马旅游网-登录</title>  
     <link rel="stylesheet" type="text/css" href="css/common.css">
     <link rel="stylesheet" type="text/css" href="css/login.css">
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-      <!--导入angularJS文件-->
-    <script src="js/angular.min.js"></script>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+	<script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	<!--导入angularJS文件-->
+	<!--<script src="js/angular.min.js"></script>-->
 	<!--导入jquery-->
 	<script src="js/jquery-3.3.1.js"></script>
+
+	<script>
+        /**
+         表单校验：
+         1.用户名不能为空
+         2.密码不能为空
+         3.验证码非空
+         */
+
+        //校验用户名
+        //单词字符，长度
+        function checkUsername() {
+            //1.获取用户名的值
+            var username = $("#username").val();
+            //2.定义正则
+            var reg_username = /^\w{8,20}$/;
+
+            //3.判断，给出提示信息
+            var flag = reg_username.test(username);
+            if(flag) {
+                //用户名合法
+                $("#username").css("border","");
+            } else {
+                //用户名非法,加一个红色边框
+                $("#username").css("border","1px solid red");
+            }
+
+            return flag;
+        }
+
+        //校验密码
+        function checkPassword() {
+            //1.获取用户名的值
+            var password = $("#password").val();
+            //2.定义正则
+            var reg_password = /^\w{8,20}$/;
+
+            //3.判断，给出提示信息
+            var flag = reg_password.test(password);
+            if(flag) {
+                //用户名合法
+                $("#password").css("border","");
+            } else {
+                //用户名非法,加一个红色边框
+                $("#password").css("border","1px solid red");
+            }
+
+            return flag;
+        }
+
+        //校验验证码
+        function checkCheck() {
+            //1.获取验证码
+            var check = $("#check").val();
+
+            //2.定义正则表达式
+            var reg_check = /^[\s\S]*.*[^\s][\s\S]*$/;
+
+            //3.判断
+            var flag = reg_check.test(check);
+            if(flag) {
+                $("#check").css("border","");
+            } else {
+                $("#check").css("border","1px solid red");
+            }
+
+            return flag;
+        }
+
+		$(function () {
+			//1.给登录按钮绑定单击事件
+			$("#btn_sub").click(function () {
+			    if(checkUsername() && checkPassword() && checkCheck()) {
+                    //校验通过，发送ajax请求，提交表单数据 username=zhangsan$password=123
+                    //2.发送ajax请求，提交表单数据
+                    $.post("loginServlet",$("#loginForm").serialize(),function (data) {
+                        //data:{flag:false,errorMsg:''}
+                        if(data.flag) {
+                            //登录成功
+                            location.href="index.html";
+                        } else {
+                            //登录失败
+                            $("#errorMsg").html(data.errorMsg);
+                        }
+                    });
+
+				}
+
+            });
+            //当某一个组件失去焦点时，调用对应的校验方法
+            $("#username").blur(checkUsername);
+            $("#password").blur(checkPassword);
+            $("#check").blur(checkCheck);
+        });
+        //3.处理响应数据
+
+
+
+
+
+
+	</script>
+
 </head>
 
 <body>
@@ -39,10 +142,10 @@
         		<div id="errorMsg" class="alert alert-danger" ></div>
 				<form id="loginForm" action="" method="post" accept-charset="utf-8">
         			<input type="hidden" name="action" value="login"/>
-					<input name="username" type="text" placeholder="请输入账号" autocomplete="off">
-        			<input name="password" type="text" placeholder="请输入密码" autocomplete="off">
+					<input name="username" id="username" type="text" placeholder="请输入账号" autocomplete="off">
+        			<input name="password" id="password" type="text" placeholder="请输入密码" autocomplete="off">
         			<div class="verify">
-					<input name="check" type="text" placeholder="请输入验证码" autocomplete="off">
+					<input name="check" id="check" type="text" placeholder="请输入验证码" autocomplete="off">
 					<span><img src="checkCode" alt="" onclick="changeCheckCode(this)"></span>
 					<script type="text/javascript">
 						//图片点击事件
@@ -52,7 +155,7 @@
 					</script>
 			</div>
 			<div class="submit_btn">
-        				<button type="button">登录</button>
+        				<button type="button" id = "btn_sub">登录</button>
         				<div class="auto_login">
         					<input type="checkbox" name="" class="checkbox">
         					<span>自动登录</span>

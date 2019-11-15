@@ -25,7 +25,7 @@ public final class MailUtils {
         try {
             final Properties props = new Properties();
             props.put("mail.smtp.auth", "true");
-            //props.put("mail.smtp.host", "smtp.qq.com");
+//            props.put("mail.smtp.host", "smtp.qq.com");
             props.put("mail.smtp.host", "smtp.163.com");
 
             // 发件人的账号
@@ -71,7 +71,7 @@ public final class MailUtils {
     }
 
     public static void main(String[] args) throws Exception { // 做测试用
-        MailUtils.sendMail("1091834601@qq.com","你好，这是一封激活邮件，无需回复。","激活邮件");
+        MailUtils.sendMail("1091834601@qq.com","您好，这是一封激活邮件，无需回复。","激活邮件");
         System.out.println("发送成功");
     }
 
