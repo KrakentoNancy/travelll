@@ -60,26 +60,28 @@ public class LoginServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        //3.调用service查询
+        //3.调用Service查询
         UserService service = new UserServiceImpl();
-        User u = service.login(user);
+        User u  = service.login(user);
 
-
+        info = new ResultInfo();
 
         //4.判断用户对象是否为null
-        if (u == null) {
-            //用户名或密码错误
+        if(u == null){
+            //用户名密码或错误
             info.setFlag(false);
-            info.setErrorMsg("用户名或密码错误");
+            info.setErrorMsg("用户名密码或错误");
         }
         //5.判断用户是否激活
-        if(u != null && !"Y".equals(u.getStatus())) {
+        if(u != null && !"Y".equals(u.getStatus())){
             //用户尚未激活
             info.setFlag(false);
             info.setErrorMsg("您尚未激活，请激活");
         }
         //6.判断登录成功
-        if(u != null && "Y".equals(u.getStatus())) {
+        if(u != null && "Y".equals(u.getStatus())){
+            request.getSession().setAttribute("user",u);//登录成功标记
+
             //登录成功
             info.setFlag(true);
         }
@@ -89,7 +91,6 @@ public class LoginServlet extends HttpServlet {
 
         response.setContentType("application/json;charset=utf-8");
         mapper.writeValue(response.getOutputStream(),info);
-
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
